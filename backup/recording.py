@@ -9,7 +9,7 @@ import os
 import pyaudio
 import wave
 
-class VoiceRecorder():
+class VoiceTrainer():
 
 
     def __init__(self,chunk=1024,frmt=pyaudio.paInt16,rate=44100,channels=1,threshold=500,):
@@ -31,24 +31,24 @@ class VoiceRecorder():
             r.append(int(i*c))
         return r
 
-    def cut(self,sound):
-        snd_started = False
-        r = array('h')
-
-        for i in sound:
-            if not snd_started and abs(i) > self.__THRESHOLD:
-                snd_started = True
-                r.append(i)
-
-            elif snd_started:
-                r.append(i)
-        return r
-
     def trim(self,sound):
 
-        sound = self.cut(sound)
+        def _trim(self,sound):
+            snd_started = False
+            r = array('h')
+
+            for i in sound:
+                if not snd_started and abs(i)>self.__THRESHOLD:
+                    snd_started = True
+                    r.append(i)
+
+                elif snd_started:
+                    r.append(i)
+            return r
+
+        sound = _trim(sound)
         sound.reverse()
-        sound = self.cut(sound)
+        sound = _trim(sound)
         sound.reverse()
 
         return sound
@@ -105,7 +105,7 @@ class VoiceRecorder():
 
     def record_to_file(self,path):
 
-        width, data = self.record()
+        width, data = record()
         data = pack('<' + ('h'*len(data)), *data)
 
         wf = wave.open(path, 'wb')

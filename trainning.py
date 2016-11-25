@@ -6,82 +6,72 @@ from scipy.spatial.distance import euclidean
 from fastdtw import fastdtw
 from python_speech_features import mfcc
 import scipy.io.wavfile as wav
-from scipy.stats._continuous_distns import maxwell_gen
 
 from recording import *
 
-os.system('cls' if os.name == 'nt' else 'clear')
 
-vt = VoiceTrainer(512,pyaudio.paInt16,16000,1)
+class VoiceTrainer(VoiceRecorder):
 
-vt.record_environment_sound(3)
+    def __init__(self,folders,record_times,centroid_path,chunk=1024,frmt=pyaudio.paInt16,rate=44100,channels=1,threshold=500):
 
-print("Threshold definido em:",vt.getThreshold())
+        VoiceRecorder.__init__(self,chunk,frmt,rate,channels,threshold)
 
-input("Precione ENTER para continuar")
-os.system('cls' if os.name == 'nt' else 'clear')
+        self.__folders = folders
+        self.__record_times = record_times
+        self.__centroid_path = centroid_path
+        self.__mfccs = [None] * record_times
+        self.__dist = [[0]*record_times for x in range(record_times)]
 
+        if (not os.path.exists(centroid_path)):
+            os.mkdir(centroid_path)
+        self.record_environment_sound(3)
+        self.create_folders(folders)
+        self.create_database(folders,record_times)
 
-print("----\tCriando base para teste")
+    def create_folders(self,folders):
+        for folder in folders:
+            if (not os.path.exists(folder)):
+                os.mkdir(folder)
 
-data = input("Insira o nome das pastas separadas por espaço\nAdicione por ultimo o numero de gravações\n")
-data = data.split(" ")
+    def create_database(self,folders,record_times):
+        for folder in folders:
+            for i in range(record_times):
+                record_path = folder + "/" + folder + str(i) + ".wav"
+                self.record_to_file(record_path)
 
-folders = data[:-1]
+    def generate_centroid_files(self):
+        for folder in self.__folders:
+            for k in range(self.__record_times):
+                record = folder+"/"+folder+str(k)+".wav"
+                (rate,sig) = wav.read(record)
+                self.__mfccs[k] = mfcc(sig,rate)
+            for i in range(self.__record_times):
+                for j in range(i,self.__record_times):
+                    distance, path = fastdtw(self.__mfccs[i],self.__mfccs[j], dist=euclidean)
+                    self.__dist[i][j] = distance
+                    self.__dist[j][i] = distance
+            sum = [0] * self.__record_times
+            min_index = None
+            min_value = math.inf
+            max_value = 0
+            for i in range(self.__record_times):
+                for j in range(self.__record_times):
+                    sum[i]+=self.__dist[i][j]
+                    if (max_value < self.__dist[i][j]):
+                        max_value = self.__dist[i][j]
+                if(min_value>=sum[i]):
+                    min_value = sum[i]
+                    min_index = i
 
-for folder in folders:
-
-    if (not os.path.exists(folder)):
-        os.mkdir(folder)
-if(len(data)>1):
-    record_times = int(data[-1])
-else:
-    print("Parametros invalidos")
-    exit()
-
-"""for folder in folders:
-    for i in range(record_times):
-        record_path = folder+"/"+folder+str(i)+".wav"
-        vt.record_to_file(record_path)"""
-
-
-dist = [[0]*record_times for x in range(record_times)]
-mfccs = [None] * record_times
-if(not os.path.exists("centroid")):
-    os.mkdir("centroid")
-
-for folder in folders:
-    for k in range(record_times):
-        record = folder+"/"+folder+str(k)+".wav"
-        (rate,sig) = wav.read(record)
-        mfccs[k] = mfcc(sig,rate)
-    for i in range(record_times):
-        for j in range(i,record_times):
-            distance, path = fastdtw(mfccs[i],mfccs[j], dist=euclidean)
-            dist[i][j] = distance
-            dist[j][i] = distance
-    sum = [0] * record_times
-    min_index = None
-    min_value = math.inf
-    max_value = 0
-    for i in range(record_times):
-        for j in range(record_times):
-            sum[i]+=dist[i][j]
-            if (max_value < dist[i][j]):
-                max_value = dist[i][j]
-        if(min_value>=sum[i]):
-            min_value = sum[i]
-            min_index = i
-
-    centroid = mfccs[min_index]
-    file = open("centroid/"+folder+".ctrd","w")
-    file.write(str(max_value))
-    for i in range(len(centroid)):
-        file.write("\n")
-        for j in range(len(centroid[i])):
-            if(j!=len(centroid[i])-1):
-                file.write(str(centroid[i][j])+" ")
-            else:
-                file.write(str(centroid[i][j]))
+            centroid = self.__mfccs[min_index]
+            file = open(self.__centroid_path+"/"+folder+".ctrd","w")
+            file.write(str(max_value))
+            for i in range(len(centroid)):
+                file.write("\n")
+                for j in range(len(centroid[i])):
+                    if(j!=len(centroid[i])-1):
+                        file.write(str(centroid[i][j])+" ")
+                    else:
+                        file.write(str(centroid[i][j]))
 
 
