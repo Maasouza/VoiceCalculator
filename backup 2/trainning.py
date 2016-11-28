@@ -16,57 +16,30 @@ class VoiceTrainer(VoiceRecorder):
 
         VoiceRecorder.__init__(self,chunk,frmt,rate,channels,threshold)
 
+        self.__folders = folders
+        self.__record_times = record_times
         self.__centroid_path = centroid_path
         self.__mfccs = [None] * record_times
         self.__dist = [[0]*record_times for x in range(record_times)]
 
-        os.system('cls' if os.name == 'nt' else 'clear')
-
-        self.record_environment_sound(3)
-        print("Treshold:",self.getThreshold())
-        input("Precione ENTER para continuar")
-        os.system('cls' if os.name == 'nt' else 'clear')
-
-
-        print("Criando diretórios...\n")
-
-        self.create_folders(folders)
-
         if (not os.path.exists(centroid_path)):
             os.mkdir(centroid_path)
-
-        print("\nDiretórios criados")
-
-        input("Precione ENTER para continuar")
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print("Iniciando a gravação da base de dados")
-        self.create_database(record_times)
-        os.system('cls' if os.name == 'nt' else 'clear')
-
+        self.record_environment_sound(3)
+        self.create_folders(folders)
+        self.create_database(folders,record_times)
 
     def create_folders(self,folders):
-        self.__folders = folders
         for folder in folders:
-            print("\tCriando a pasta",folder)
             if (not os.path.exists(folder)):
                 os.mkdir(folder)
 
-    def create_database(self,record_times):
-        self.__record_times = record_times
-        for folder in self.__folders:
-            print("-",folder)
+    def create_database(self,folders,record_times):
+        for folder in folders:
             for i in range(record_times):
-
                 record_path = folder + "/" + folder + str(i) + ".wav"
-                print("\t"+record_path)
-                print("Comece a falar para iniciar a gravação")
                 self.record_to_file(record_path)
-                input("ENTER para ir para a proxima gravação")
-                os.system('cls' if os.name == 'nt' else 'clear')
 
     def generate_centroid_files(self):
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print("Gerandos os centroides")
         for folder in self.__folders:
             for k in range(self.__record_times):
                 record = folder+"/"+folder+str(k)+".wav"
@@ -100,8 +73,5 @@ class VoiceTrainer(VoiceRecorder):
                         file.write(str(centroid[i][j])+" ")
                     else:
                         file.write(str(centroid[i][j]))
-            file.close()
-
-        print("Centroides gerados com sucesso")
 
 
