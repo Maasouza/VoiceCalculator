@@ -1,7 +1,7 @@
 #<p align='center'>COE363 - Telecomunicações - UFRJ 2016.2</p>
 <p align='center'>VoiceCalculator - Calculadora comandado por voz</p>
 
-Trabalho desenvolvido por: [Marcos Aurélio](https://github.com/Maasouza),[Anna Gabrielle](https://github.com/AnnaGabrielle)<br>
+Trabalho desenvolvido por: [Marcos Aurélio](https://github.com/Maasouza) e [Anna Gabrielle](https://github.com/AnnaGabrielle)<br>
 Para a disciplina do Profº. Fernando Gil
 
 1. Tecnologias
@@ -14,39 +14,65 @@ Para a disciplina do Profº. Fernando Gil
       <li>[Python Speech Features](https://github.com/jameslyons/python_speech_features) - Biblioteca utilizada para retirada dos MFCCs</li>
     </ul>
 
-3. Modulos
+3. Modulos  
+    
+    * Gravação  
 
-  - [ ] Algoritmo de força bruta
-  - [ ] Algoritmo backtracking
-  - [ ] Algoritmo branch and bound
-  - [ ] Algoritmo utilizando a heurística XXXX
-  - [X] Função para gerar um grafo aleatório
+            Modulo base do trabalho  
+            Contém a classe VoiceRecorder que contem as funções necessarias para a gravação dos audios 
+    
+    * Treinamento  
 
-3. Instruções
-    * [Download](https://github.com/Maasouza/MinVertexCover/archive/master.zip)
+            Derivado do modulo de gravação  
+            Ele é responsavel por gravar os audios, retirar os parametros e calcular os centroides
+            Gera arquivos contendos os centroides que serão lidos pelo modulo de reconhecimento  
+    
+    * Reconhecimento  
 
-    * Clone
+            Modulo que recebe os arquivos gerados pelo modulo de treinamento  
+            Ele é responsavel por gravar e comparar os audios de entradas com os do treinamento  
+            No final de sua execução gerar uma string que será tratada no modulo Traduto  
 
-            git clone https://github.com/maasouza/minvertexcover.git
+    * Tradutor  
 
-    * Para rodar o algoritmo
+            Modulo genérico
+            Responsavel por receber uma string e converter para funções
+            No nosso caso transforma string em operações numéricas  
+            
+4. Instruções  
+  
+   * Clone o repositorio ou realize o download  
+   
+   * Tenha os itens citados no topico 2 instalados  
+   
+   * Crie um arquivo como este exemplo para realizar o treinamento  
+   
+         ```python
+         from training import *
+         palavras = ["lista","de","palavras"]
+         num_gravacoes = 4
+         pasta_destino = "caminho/para/pasta/que/vai/conter/os/arquivos/"
+         treinamento = VoiceTrainer(palavras,num_gravacoes,pasta_destino)
+         ```
+         
+   * Crie um arquivo como este de exemplo para executar o reconhecimento
 
-            cd minvertexcover/src
-            make
-            ./main --path ../path/to/graph.dat --type [BF|BT|BB|HT]
-
-    * Para gerar um grafo
-
-            cd minvertexcover/data
-            make
-            ./new --v nVertices --d densidade --path ../path/to/new_graph.dat
-
-    * Visualizar o grafo
-
-            O grafo pode ser visualizado localmente.
-            Basta abrir o arquivo index.html (Firefox only).
-            Exemplo https://maasouza.github.io/MinVertexCover/site/
-
+         ```python
+         from recognizing import *
+         palavras = ["lista","de","palavras"]
+         pasta_dados = "pasta/que/contem/os/arquivos/gerados/no/treino"
+         reconhecedor = VoiceRocognizer(palavras,pasta_dados)
+         continua = True
+         frase = ""
+         while(continua):
+            dados = reconhecedor.extract_params()
+            palavra = reconhecedor.compare(dados)
+            if(palavra satisfaz condição de parada):
+               continua = False
+            frase.append(palavra)
+         tradutor = casting()
+         tradutor.execute(frase)
+         ```
 
 
 
