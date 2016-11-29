@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Voicecalculator by Maasouza</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Voicecalculator</h1>
+        <h2>Calculadora simples controlada por voz desenvolvida com Python</h2>
+        <a href="https://github.com/Maasouza/VoiceCalculator" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1></h1><p align="center">COE363 - Telecomunicações - UFRJ 2016.2</p>
+
+<p align="center">VoiceCalculator - Calculadora comandado por voz</p>
+
+<p>Trabalho desenvolvido por: <a href="https://github.com/Maasouza">Marcos Aurélio</a> e <a href="https://github.com/AnnaGabrielle">Anna Gabrielle</a><br>
+Para a disciplina do Profº. Fernando Gil</p>
+
+<ol>
+<li>Tecnologias
+
+<ul>
+<li>Python<br>
+</li>
+</ul>
+</li>
+<li>
+<p>Bibliotecas utilizadas
+   </p>
+<ul>
+    <li>
+<a href="https://www.scipy.org/">Scipy</a> - Biblioteca que fornece algumas funções matemáticas.</li>
+    <li>
+<a href="https://people.csail.mit.edu/hubert/pyaudio/">PyAudio</a> - Biblioteca utilizada para gravação dos áudios</li>
+    <li>
+<a href="https://pypi.python.org/pypi/fastdtw/0.3.0">FastDTW</a> - Biblioteca que fornece o algoritmo DTW para calcular a distancia entres os áudios</li>
+    <li>
+<a href="https://github.com/jameslyons/python_speech_features">Python Speech Features</a> - Biblioteca utilizada para retirada dos MFCCs</li>
+  </ul>
+</li>
+<li>
+<p>Modulos<br>
+ </p>
+
+<ul>
+<li>
+<p>Gravação  </p>
+
+<pre><code>Modulo base do trabalho  
+Contém a classe VoiceRecorder que contem as funções necessarias para a gravação dos audios 
+</code></pre>
+</li>
+<li>
+<p>Treinamento  </p>
+
+<pre><code>Derivado do modulo de gravação  
+Ele é responsavel por gravar os audios, retirar os parametros e calcular os centroides
+Gera arquivos contendos os centroides que serão lidos pelo modulo de reconhecimento  
+</code></pre>
+</li>
+<li>
+<p>Reconhecimento  </p>
+
+<pre><code>Modulo que recebe os arquivos gerados pelo modulo de treinamento  
+Ele é responsavel por gravar e comparar os audios de entradas com os do treinamento  
+No final de sua execução gerar uma string que será tratada no modulo Traduto  
+</code></pre>
+</li>
+<li>
+<p>Tradutor  </p>
+
+<pre><code>Modulo genérico
+Responsavel por receber uma string e converter para funções
+No nosso caso transforma string em operações numéricas  
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>Instruções  </p>
+
+<ul>
+<li><p>Clone o repositorio ou realize o download  </p></li>
+<li><p>Tenha os itens citados no topico 2 instalados  </p></li>
+<li>
+<p>Crie um arquivo como este exemplo para realizar o treinamento  </p>
+
+<div class="highlight highlight-source-python"><pre> <span class="pl-k">from</span> training <span class="pl-k">import</span> <span class="pl-k">*</span>
+ palavras <span class="pl-k">=</span> [<span class="pl-s"><span class="pl-pds">"</span>lista<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>de<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>palavras<span class="pl-pds">"</span></span>]
+ num_gravacoes <span class="pl-k">=</span> <span class="pl-c1">4</span>
+ pasta_destino <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>caminho/para/pasta/que/vai/conter/os/arquivos/<span class="pl-pds">"</span></span>
+ treinamento <span class="pl-k">=</span> VoiceTrainer(palavras,num_gravacoes,pasta_destino)</pre></div>
+</li>
+<li>
+<p>Crie um arquivo como este de exemplo para executar o reconhecimento</p>
+
+<div class="highlight highlight-source-python"><pre> <span class="pl-k">from</span> recognizing <span class="pl-k">import</span> <span class="pl-k">*</span>
+ palavras <span class="pl-k">=</span> [<span class="pl-s"><span class="pl-pds">"</span>lista<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>de<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>palavras<span class="pl-pds">"</span></span>]
+ pasta_dados <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>pasta/que/contem/os/arquivos/gerados/no/treino<span class="pl-pds">"</span></span>
+ reconhecedor <span class="pl-k">=</span> VoiceRocognizer(palavras,pasta_dados)
+ continua <span class="pl-k">=</span> <span class="pl-c1">True</span>
+ frase <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+ <span class="pl-k">while</span>(continua):
+    dados <span class="pl-k">=</span> reconhecedor.extract_params()
+    palavra <span class="pl-k">=</span> reconhecedor.compare(dados)
+    <span class="pl-k">if</span>(palavra satisfaz condição de parada):
+       continua <span class="pl-k">=</span> <span class="pl-c1">False</span>
+    frase.append(palavra)
+ tradutor <span class="pl-k">=</span> casting()
+ tradutor.execute(frase)</pre></div>
+</li>
+</ul>
+</li>
+</ol>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/Maasouza/VoiceCalculator/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/Maasouza/VoiceCalculator/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/Maasouza/VoiceCalculator"></a> is maintained by <a href="https://github.com/Maasouza">Maasouza</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
