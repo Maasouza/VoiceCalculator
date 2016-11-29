@@ -23,6 +23,7 @@ class VoiceTrainer(VoiceRecorder):
         os.system('cls' if os.name == 'nt' else 'clear')
 
         self.record_environment_sound(3)
+
         print("Treshold:",self.getThreshold())
         input("Precione ENTER para continuar")
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -38,9 +39,14 @@ class VoiceTrainer(VoiceRecorder):
         print("\nDiretórios criados")
 
         input("Precione ENTER para continuar")
+
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("Iniciando a gravação da base de dados")
+
+        print("Iniciando a gravação da base de dados em ordem")
+        input(str(self.__folders)+" ENTER para iniciar")
+
         self.create_database(record_times)
+
         os.system('cls' if os.name == 'nt' else 'clear')
 
 
@@ -56,12 +62,12 @@ class VoiceTrainer(VoiceRecorder):
         for folder in self.__folders:
             print("-",folder)
             for i in range(record_times):
-
                 record_path = folder + "/" + folder + str(i) + ".wav"
-                print("\t"+record_path)
                 print("Comece a falar para iniciar a gravação")
+
                 self.record_to_file(record_path)
-                input("ENTER para ir para a proxima gravação")
+
+                input(record_path+" concluido\n\tENTER para ir para a proxima gravação")
                 os.system('cls' if os.name == 'nt' else 'clear')
 
     def generate_centroid_files(self):

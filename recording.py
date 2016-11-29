@@ -18,10 +18,10 @@ class VoiceRecorder():
         self.__FORMAT = frmt
         self.__RATE = rate
         self.__CHANNELS = channels
-        self.__MAX_SILENCE = 50
+        self.__MAX_SILENCE = 60
 
     def is_silent(self,sound):
-        return max(sound) < self.__THRESHOLD
+        return max(list(map(abs,sound))) < self.__THRESHOLD
 
     def normalize(self,sound):
         MAXIMUM = 16384 #Max of signed int16

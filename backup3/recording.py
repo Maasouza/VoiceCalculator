@@ -12,12 +12,13 @@ import wave
 class VoiceRecorder():
 
 
-    def __init__(self,chunk=1024,frmt=pyaudio.paInt16,rate=44100,channels=1,threshold=500,):
+    def __init__(self,chunk=1024,frmt=pyaudio.paInt16,rate=44100,channels=1,threshold=500):
         self.__THRESHOLD = threshold
         self.__CHUNK_SIZE = chunk
         self.__FORMAT = frmt
         self.__RATE = rate
         self.__CHANNELS = channels
+        self.__MAX_SILENCE = 50
 
     def is_silent(self,sound):
         return max(sound) < self.__THRESHOLD
@@ -72,6 +73,8 @@ class VoiceRecorder():
 
         num_silent = 0
         snd_started = False
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("Fale para começar a gravar")
 
         r = array('h')
 
@@ -89,7 +92,7 @@ class VoiceRecorder():
                 print("Gravando...")
                 snd_started = True
 
-            if snd_started and num_silent > 30:
+            if snd_started and num_silent > self.__MAX_SILENCE:
                 print("Gravação concluida...")
                 break
 
@@ -137,8 +140,7 @@ class VoiceRecorder():
 
         frames = []
         sound_max = 0
-        mean = 0
-        t = 0
+
         for i in range(0, int(self.__RATE / self.__CHUNK_SIZE * seconds)):
             sound = array('h', stream.read(self.__CHUNK_SIZE))
             if max(list(map(abs,sound)))> sound_max:

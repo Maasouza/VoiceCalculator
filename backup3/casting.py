@@ -29,13 +29,13 @@ class TextCalculator():
 
     def data_extract(self,text):
         """retorna uma lista contendo (operação,x,y)"""
-        #words = text.split(" ")
+        words = text.split(" ")
 
         op = None
         x = ""
         y = ""
 
-        for word in text:
+        for word in words:
             if (op == None):
                 if(word == "mais" or word == "menos" or word == "dividido" or word == "vezes" or word =="elevado"):
                     op = self.operation_cast(word)
@@ -45,6 +45,7 @@ class TextCalculator():
                 y += self.number_cast(word)
 
         return op,int(x),int(y)
+
 
     def calculator(self,op, x, y):
         if(x== None or y == None or op == None):
@@ -61,3 +62,6 @@ class TextCalculator():
             return (x * y)
         elif (op == 4):
             return (x**y)
+
+
+
