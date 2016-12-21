@@ -12,7 +12,7 @@ import wave
 class VoiceRecorder():
 
 
-    def __init__(self,chunk=1024,frmt=pyaudio.paInt16,rate=44100,channels=1,threshold=500):
+    def __init__(self,chunk=512,frmt=pyaudio.paInt16,rate=16000,channels=1,threshold=500):
         self.__THRESHOLD = threshold
         self.__CHUNK_SIZE = chunk
         self.__FORMAT = frmt
@@ -82,7 +82,7 @@ class VoiceRecorder():
             sound = array('h', stream.read(self.__CHUNK_SIZE))
             if byteorder == 'big':
                 sound.byteswap()
-            r.extend(sound)
+            r.extend(sound)pyht
 
             silent = self.is_silent(sound)
 
@@ -101,7 +101,7 @@ class VoiceRecorder():
         stream.close()
         p.terminate()
 
-        r = self.normalize(r)
+        #r = self.normalize(r)
         r = self.trim(r)
         r = self.add_silence(r, 0.5)
         return width, r

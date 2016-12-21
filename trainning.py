@@ -12,42 +12,45 @@ from recording import *
 
 class VoiceTrainer(VoiceRecorder):
 
-    def __init__(self,folders,record_times,centroid_path,chunk=1024,frmt=pyaudio.paInt16,rate=44100,channels=1,threshold=500):
+    def __init__(self,folders=None,record_times=None,centroid_path=None,chunk=512,frmt=pyaudio.paInt16,rate=16000,channels=1,threshold=500):
+
+        self.__record_times = record_times
+        self.__mfccs = [None] * record_times
+        self.__dist = [[0]*record_times for x in range(record_times)]
+        self.__centroid_path = centroid_path
+
+        if(centroid_path!=None):
+            if (not os.path.exists(centroid_path)):
+                os.mkdir(centroid_path)
 
         VoiceRecorder.__init__(self,chunk,frmt,rate,channels,threshold)
 
-        self.__centroid_path = centroid_path
-        self.__mfccs = [None] * record_times
-        self.__dist = [[0]*record_times for x in range(record_times)]
+        if(folders != None):
+            os.system('cls' if os.name == 'nt' else 'clear')
 
-        os.system('cls' if os.name == 'nt' else 'clear')
+            self.record_environment_sound(3)
 
-        self.record_environment_sound(3)
-
-        print("Treshold:",self.getThreshold())
-        input("Precione ENTER para continuar")
-        os.system('cls' if os.name == 'nt' else 'clear')
+            print("Treshold:",self.getThreshold())
+            input("Precione ENTER para continuar")
+            os.system('cls' if os.name == 'nt' else 'clear')
 
 
-        print("Criando diretórios...\n")
+            print("Criando diretórios...\n")
 
-        self.create_folders(folders)
+            self.create_folders(folders)
 
-        if (not os.path.exists(centroid_path)):
-            os.mkdir(centroid_path)
+            print("\nDiretórios criados")
 
-        print("\nDiretórios criados")
+            input("Precione ENTER para continuar")
 
-        input("Precione ENTER para continuar")
+            os.system('cls' if os.name == 'nt' else 'clear')
 
-        os.system('cls' if os.name == 'nt' else 'clear')
+            print("Iniciando a gravação da base de dados em ordem")
+            input(str(self.__folders)+" ENTER para iniciar")
 
-        print("Iniciando a gravação da base de dados em ordem")
-        input(str(self.__folders)+" ENTER para iniciar")
+            self.create_database(record_times)
 
-        self.create_database(record_times)
-
-        os.system('cls' if os.name == 'nt' else 'clear')
+            os.system('cls' if os.name == 'nt' else 'clear')
 
 
     def create_folders(self,folders):

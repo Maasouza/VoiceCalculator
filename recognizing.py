@@ -11,7 +11,7 @@ import math
 
 class VoiceRecognizer(VoiceRecorder):
 
-    def __init__(self,words,centroid_path,chunk=1024,frmt=pyaudio.paInt16,rate=44100,channels=1,threshold=500):
+    def __init__(self,words,centroid_path,chunk=512,frmt=pyaudio.paInt16,rate=16000,channels=1,threshold=500):
 
         VoiceRecorder.__init__(self,chunk,frmt,rate,channels,threshold)
         self.__words = words

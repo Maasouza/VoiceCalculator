@@ -2,8 +2,8 @@ from recognizing import *
 from casting import *
 
 import time as T
-a = ["um","dois","mais","igual"]#folders
-path = "controid" #path to centroid folder
+a = ["um","dois","tres","mais"]#folders
+path = "centroid" #path to centroid folder
 
 t = VoiceRecognizer(a,path)
 
@@ -17,7 +17,7 @@ while(play):
     audio_data = t.extract_params()
 
     print("Equação:", equation)
-    T.sleep(2)
+    T.sleep(1)
 
     word = t.compare(audio_data)
     if(word != None):
